@@ -1,0 +1,37 @@
+{
+    "root": true,
+    "parser": "@typescript-eslint/parser",
+    "parserOptions": {
+        "ecmaVersion": 6,
+        "sourceType": "module"
+    },
+    "env": {
+        "browser": true,
+        "node": true
+    },
+    "extends": [
+        "eslint:recommended",
+        "plugin:prettier/recommended"
+    ],
+    "plugins": [
+        "@typescript-eslint",
+        "prettier"
+    ],
+    "rules": {
+        "@typescript-eslint/naming-convention": "warn",
+        "@typescript-eslint/semi": "warn",
+        "curly": [
+            "error",
+            "all"
+        ],
+        "eqeqeq": "warn",
+        "no-throw-literal": "warn",
+        "semi": "off",
+        "no-console": "off"
+    },
+    "ignorePatterns": [
+        "out",
+        "dist",
+        "**/*.d.ts"
+    ]
+}
