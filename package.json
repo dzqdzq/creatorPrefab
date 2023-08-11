@@ -1,13 +1,16 @@
 {
   "name": "creator-prefab",
-  "displayName": "creatorPrefab",
-  "description": "cocos creator prefab parse",
-  "version": "0.0.1",
+  "displayName": "Cocos Creator Prefab",
+  "description": "Cocos Creator Prefab Parse, support jump __id__, highlight",
+  "version": "1.1.1",
   "engines": {
     "vscode": "^1.80.0"
   },
+  "publisher": "dzqdzq",
   "categories": [
-    "Other"
+    "Programming Languages",
+    "Formatters",
+    "Linters"
   ],
   "contributes": {
     "languages": [
@@ -50,6 +53,22 @@
       }
     ]
   },
+  "icon": "images/logo.png",
+  "author": {
+    "email": "xtdzq@hotmail.com",
+    "name": "dzqdzq",
+    "url": "https://cnblogs.com/dzqdzq"
+  },
+  "keywords": [
+    "cocos",
+    "creator",
+    "cocos creator",
+    "cocos2dx",
+    "cocos2d-x",
+    "prefab",
+    "prefab parse",
+    "prefab translate"
+  ],
   "repository": {
     "type": "git",
     "url": "https://github.com/dzqdzq/creatorPrefab"
