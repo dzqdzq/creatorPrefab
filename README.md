@@ -12,3 +12,9 @@ prefab文件图标将发生变化, 变成{p}
 2. 支持id跳转
 3. 支持显示预制体图标
 4. 支持id信息预览
+   ![Alt text](images/image-1.png)
+
+### 1.1.5
+
+1. 新增对uuid解析支持
+   ![Alt text](images/image.png)

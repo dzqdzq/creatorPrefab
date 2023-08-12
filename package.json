@@ -2,7 +2,7 @@
   "name": "creator-prefab",
   "displayName": "Cocos Creator Prefab",
   "description": "Cocos Creator Prefab Parse, support jump __id__, highlight",
-  "version": "1.1.1",
+  "version": "1.1.5",
   "engines": {
     "vscode": "^1.80.0"
   },
@@ -64,7 +64,7 @@
     "creator",
     "cocos creator",
     "cocos2dx",
-    "cocos2d-x",
+    "dzqdzq",
     "prefab",
     "prefab parse",
     "prefab translate"
@@ -75,7 +75,7 @@
   },
   "bugs": {
     "url": "https://github.com/dzqdzq/creatorPrefab/issues",
-    "email": "635587322@qq.com"
+    "email": "xtdzq@hotmail.com"
   },
   "activationEvents": [
     "onLanguage:prefab",
