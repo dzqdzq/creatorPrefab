@@ -24,6 +24,54 @@ async function getSpriteFrame(uuid: string) {
   }
 }
 
+for (
+  var t = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/',
+    r = new Array(128),
+    i = 0;
+  i < 128;
+  ++i
+) {
+  r[i] = 0;
+}
+for (i = 0; i < 64; ++i) {
+  r[t.charCodeAt(i)] = i;
+}
+function decompressUuid(e) {
+  if (23 === e.length) {
+    let t = [];
+    for (let i = 5; i < 23; i += 2) {
+      let n = r[e.charCodeAt(i)],
+        s = r[e.charCodeAt(i + 1)];
+      t.push((n >> 2).toString(16)),
+        t.push((((3 & n) << 2) | (s >> 4)).toString(16)),
+        t.push((15 & s).toString(16));
+    }
+    e = e.slice(0, 5) + t.join('');
+  } else {
+    if (22 !== e.length) {
+      return e;
+    }
+    {
+      let t = [];
+      for (let i = 2; i < 22; i += 2) {
+        let n = r[e.charCodeAt(i)],
+          s = r[e.charCodeAt(i + 1)];
+        t.push((n >> 2).toString(16)),
+          t.push((((3 & n) << 2) | (s >> 4)).toString(16)),
+          t.push((15 & s).toString(16));
+      }
+      e = e.slice(0, 2) + t.join('');
+    }
+  }
+  return [
+    e.slice(0, 8),
+    e.slice(8, 12),
+    e.slice(12, 16),
+    e.slice(16, 20),
+    e.slice(20),
+  ].join('-');
+}
+
 function getStartEnd(index: number): { start?: number; end?: number } {
   if (!lineInfos) {
     return {};
@@ -45,6 +93,29 @@ function preLineInfos(document: vscode.TextDocument): any {
     jsonObj.forEach((item) => {
       lineInfos!.push(JSON.stringify(item, null, 2).split('\n').length);
     });
+  }
+}
+
+function getDecoration(
+  i: number,
+  uuid: string,
+  decorationOptions: vscode.DecorationOptions[]
+): void {
+  const longuuid = decompressUuid(uuid);
+  if (longuuid === uuid) {
+    return;
+  }
+  const asset = libraryInfos[longuuid];
+  if (asset) {
+    let positionStart = new vscode.Position(i, 100);
+    let range = new vscode.Range(positionStart, positionStart);
+    let decoration: vscode.DecorationOptions = {
+      range: range,
+      renderOptions: {
+        after: { contentText: ' ' + asset.relativePath },
+      },
+    };
+    decorationOptions.push(decoration);
   }
 }
 
@@ -81,7 +152,10 @@ async function dealEditor(editor?: vscode.TextEditor): Promise<void> {
 
     for (let i = 1, c = document.lineCount; i < c; i++) {
       let line = document.lineAt(i).text;
-      const uuidIdx = line.indexOf('"__uuid__":');
+      if (line.length < 42) {
+        continue;
+      }
+      let uuidIdx = line.indexOf('"__uuid__":');
       if (uuidIdx > 0) {
         const uuid = line.substring(uuidIdx + 13, uuidIdx + 49);
         const asset = libraryInfos[uuid];
@@ -107,6 +181,12 @@ async function dealEditor(editor?: vscode.TextEditor): Promise<void> {
             decorationOptions.push(decoration);
           }
         }
+      } else if ((uuidIdx = line.indexOf('"__type__":')) > 0) {
+        const uuid = line.substring(uuidIdx + 13, uuidIdx + 36);
+        getDecoration(i, uuid, decorationOptions);
+      } else if ((uuidIdx = line.indexOf('"_componentId":')) > 0) {
+        const uuid = line.substring(uuidIdx + 17, uuidIdx + 40);
+        getDecoration(i, uuid, decorationOptions);
       }
     }
 
