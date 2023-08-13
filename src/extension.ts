@@ -36,7 +36,7 @@ for (
 for (i = 0; i < 64; ++i) {
   r[t.charCodeAt(i)] = i;
 }
-function decompressUuid(e) {
+function decompressUuid(e: string) {
   if (23 === e.length) {
     let t = [];
     for (let i = 5; i < 23; i += 2) {
