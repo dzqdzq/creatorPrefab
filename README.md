@@ -10,6 +10,11 @@ uuid解析和组件hash解析功能依赖当前打开的是cocos creator项目�
 
 ## 版本记录
 
+### 1.2.8
+
+1. 支持显示当前id, 方便手动修改引用, 少量节点引用修复不用再打开creator编辑器
+   ![Alt text](images/image1.2.8.png)
+
 ### 1.2.5
 
 1. 支持主动刷新显示, 在预制体文件中，鼠标右键
@@ -38,3 +43,8 @@ uuid解析和组件hash解析功能依赖当前打开的是cocos creator项目�
 3. 支持显示预制体图标
 4. 支持id信息预览
    ![Alt text](images/image-1.png)
+
+## 成为赞助商
+
+如果本插件对您有用，可以支持一下, 谢谢
+![Alt text](images/1.jpg)

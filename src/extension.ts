@@ -218,6 +218,7 @@ async function dealEditor(): Promise<void> {
   ) {
     return;
   }
+
   preLineInfos(document);
 
   if (!isHaveLibrary) {
@@ -229,13 +230,23 @@ async function dealEditor(): Promise<void> {
   }
 
   // 应用装饰
+  let count = 0;
   let decorationOptions: vscode.DecorationOptions[] = [];
-
   for (let i = 1, c = document.lineCount; i < c; i++) {
     let line = document.lineAt(i).text;
     if (line.length < 42) {
+      if (line === '  {') {
+        let positionStart = new vscode.Position(i, 10);
+        let range = new vscode.Range(positionStart, positionStart);
+        let decoration: vscode.DecorationOptions = {
+          range: range,
+          renderOptions: { after: { contentText: ` id: ${count++}` } },
+        };
+        decorationOptions.push(decoration);
+      }
       continue;
     }
+
     let uuidIdx = line.indexOf('"__uuid__":');
     if (uuidIdx > 0) {
       const uuid = line.substring(uuidIdx + 13, uuidIdx + 49);
