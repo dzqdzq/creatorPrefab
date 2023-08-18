@@ -1,5 +1,8 @@
 import * as vscode from 'vscode';
 import * as fs from 'fs';
+// @ts-ignore
+import UUIDUtils from './uuid-utils.js';
+import { parseInternal } from './parseInternal';
 const vscodeFs = vscode.workspace.fs;
 
 let lineInfos: number[] | null = null;
@@ -7,6 +10,7 @@ let libraryInfos: { [key: string]: { relativePath: string } } = {};
 let isHaveLibrary = false;
 let importsPath: string = '';
 let dealLibraryLock = false;
+let internals: { [key: string]: string } = {};
 const decorationType = vscode.window.createTextEditorDecorationType({
   rangeBehavior: vscode.DecorationRangeBehavior.ClosedClosed,
   overviewRulerLane: vscode.OverviewRulerLane.Full,
@@ -31,54 +35,6 @@ async function getSpriteFrame(uuid: string) {
   } catch (e) {
     return '';
   }
-}
-
-for (
-  var t = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/',
-    r = new Array(128),
-    i = 0;
-  i < 128;
-  ++i
-) {
-  r[i] = 0;
-}
-for (i = 0; i < 64; ++i) {
-  r[t.charCodeAt(i)] = i;
-}
-function decompressUuid(e: string) {
-  if (23 === e.length) {
-    let t = [];
-    for (let i = 5; i < 23; i += 2) {
-      let n = r[e.charCodeAt(i)],
-        s = r[e.charCodeAt(i + 1)];
-      t.push((n >> 2).toString(16)),
-        t.push((((3 & n) << 2) | (s >> 4)).toString(16)),
-        t.push((15 & s).toString(16));
-    }
-    e = e.slice(0, 5) + t.join('');
-  } else {
-    if (22 !== e.length) {
-      return e;
-    }
-    {
-      let t = [];
-      for (let i = 2; i < 22; i += 2) {
-        let n = r[e.charCodeAt(i)],
-          s = r[e.charCodeAt(i + 1)];
-        t.push((n >> 2).toString(16)),
-          t.push((((3 & n) << 2) | (s >> 4)).toString(16)),
-          t.push((15 & s).toString(16));
-      }
-      e = e.slice(0, 2) + t.join('');
-    }
-  }
-  return [
-    e.slice(0, 8),
-    e.slice(8, 12),
-    e.slice(12, 16),
-    e.slice(16, 20),
-    e.slice(20),
-  ].join('-');
 }
 
 function getStartEnd(index: number): { start?: number; end?: number } {
@@ -110,7 +66,7 @@ function getDecoration(
   uuid: string,
   decorationOptions: vscode.DecorationOptions[]
 ): void {
-  const longuuid = decompressUuid(uuid);
+  const longuuid = UUIDUtils.decompressUuid(uuid);
   if (longuuid === uuid) {
     return;
   }
@@ -165,6 +121,30 @@ async function loadUuidJson(jsonPath: string) {
     resetLibraryInfos();
   }
   return isHaveLibrary;
+}
+
+async function dealCreatorVersion(): Promise<void> {
+  let workspaceFolders = vscode.workspace.workspaceFolders;
+  if (!workspaceFolders) {
+    return;
+  }
+
+  for (let workspaceFolder of workspaceFolders) {
+    let workspaceFolderPath = workspaceFolder.uri.fsPath;
+    const jsonPath = workspaceFolderPath + '/project.json';
+    try {
+      const jsonUri = vscode.Uri.file(jsonPath);
+      const data = await vscodeFs.readFile(jsonUri);
+      const jsonObj = JSON.parse(data.toString());
+      if (!jsonObj.version) {
+        continue;
+      }
+      internals = parseInternal(jsonObj.version);
+      break;
+    } catch (error) {
+      console.log(error);
+    }
+  }
 }
 
 async function dealLibrary(): Promise<void> {
@@ -251,13 +231,16 @@ async function dealEditor(): Promise<void> {
     if (uuidIdx > 0) {
       const uuid = line.substring(uuidIdx + 13, uuidIdx + 49);
       const asset = libraryInfos[uuid];
-      if (asset) {
+      if (asset || internals[uuid]) {
+        const contentText = asset
+          ? asset.relativePath
+          : `db://internals/${internals[uuid]}`;
         let positionStart = new vscode.Position(i, uuidIdx + 52);
         let range = new vscode.Range(positionStart, positionStart);
         let decoration: vscode.DecorationOptions = {
           range: range,
           renderOptions: {
-            after: { contentText: ' ' + asset.relativePath },
+            after: { contentText: ' ' + contentText },
           },
         };
         decorationOptions.push(decoration);
@@ -319,5 +302,6 @@ export async function activate(context: vscode.ExtensionContext) {
     vscode.window.onDidChangeActiveTextEditor(dealEditor)
   );
 
+  dealCreatorVersion();
   dealEditor();
 }

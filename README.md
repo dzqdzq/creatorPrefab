@@ -10,6 +10,11 @@ uuid解析和组件hash解析功能依赖当前打开的是cocos creator项目�
 
 ## 版本记录
 
+### 1.3.0
+
+1. 支持引擎内置的uuid解析
+   ![Alt text](images/image1.3.0.png)
+
 ### 1.2.8
 
 1. 支持显示当前id, 方便手动修改引用, 少量节点引用修复不用再打开creator编辑器
