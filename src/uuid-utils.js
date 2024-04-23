@@ -1,7 +1,7 @@
 for (
   var t = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/',
-    r = new Array(128),
-    i = 0;
+  r = new Array(128),
+  i = 0;
   i < 128;
   ++i
 ) {
@@ -16,20 +16,21 @@ const n = /-/g,
   o = /^[0-9a-fA-F]{32}$/,
   u = /^[0-9a-zA-Z+/]{22,23}$/,
   a = /.*[/\\][0-9a-fA-F]{2}[/\\]([0-9a-fA-F-]{8,})/;
-var c = {
-  Reg_UuidInLibPath: a,
-  NonUuidMark: '.',
+var uuidUtils = {
   compressUuid: function (e, t) {
-    if (s.test(e)) e = e.replace(n, '');
-    else if (!o.test(e)) return e;
-    var r = !0 === t ? 2 : 5;
-    return c.compressHex(e, r);
+    if (s.test(e)) {
+      e = e.replace(n, '');
+    } else if (!o.test(e)) {
+      return e;
+    }
+    var r = t ? 2 : 5;
+    return uuidUtils.compressHex(e, r);
   },
   compressHex: function (e, r) {
     var i,
       n = e.length;
     i = void 0 !== r ? r : n % 3;
-    for (var s = e.slice(0, i), o = []; i < n; ) {
+    for (var s = e.slice(0, i), o = []; i < n;) {
       var u = parseInt(e[i], 16),
         a = parseInt(e[i + 1], 16),
         c = parseInt(e[i + 2], 16);
@@ -49,7 +50,9 @@ var c = {
       }
       e = e.slice(0, 5) + t.join('');
     } else {
-      if (22 !== e.length) return e;
+      if (22 !== e.length) {
+        return e;
+      }
       {
         let t = [];
         for (let i = 2; i < 22; i += 2) {
@@ -78,4 +81,18 @@ var c = {
     return t ? t[1] : '';
   },
 };
-export default c;
+
+function getShortUUID(longUUID) {
+  return [uuidUtils.compressUuid(longUUID, false), uuidUtils.compressUuid(longUUID, true)];
+}
+
+function getLongUUID(uuid) {
+  if (uuid.length === 22 || uuid.length === 23) {
+    return uuidUtils.decompressUuid(uuid);
+  }
+  return uuid;
+}
+
+uuidUtils.getShortUUID = getShortUUID;
+uuidUtils.getLongUUID = getLongUUID;
+module.exports = uuidUtils;

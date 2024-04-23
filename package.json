@@ -2,7 +2,7 @@
   "name": "creator-prefab",
   "displayName": "Cocos Creator Prefab",
   "description": "Cocos Creator Prefab Parse, support jump __id__, highlight",
-  "version": "1.3.0",
+  "version": "2.0.0",
   "engines": {
     "vscode": "^1.80.0"
   },
@@ -23,11 +23,31 @@
         }
       ]
     },
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "mainView",
+          "title": "Parse Prefab",
+          "icon": "images/dzq.svg"
+        }
+      ]
+    },
+    "views": {
+      "mainView": [
+        {
+          "id": "uuidParser",
+          "name": "uuidParser",
+          "visibility": "visible",
+          "type": "webview"
+        }
+      ]
+    },
     "languages": [
       {
         "id": "prefab",
         "aliases": [
-          "Prefab"
+          "Prefab",
+          "prefab"
         ],
         "extensions": [
           ".prefab",
@@ -60,9 +80,17 @@
         "command": "creatorPrefab.parsePrefab",
         "title": "parsePrefab",
         "category": "creatorPrefab"
+      },
+      {
+        "command": "creatorPrefab.showUUIDParser",
+        "title": "Show UUID Parser"
       }
     ]
   },
+  "activationEvents": [
+    "onLanguage:fire",
+    "onLanguage:prefab"
+  ],
   "icon": "images/logo.png",
   "author": {
     "email": "xtdzq@hotmail.com",
@@ -87,24 +115,19 @@
     "url": "https://github.com/dzqdzq/creatorPrefab/issues",
     "email": "xtdzq@hotmail.com"
   },
-  "activationEvents": [
-    "onLanguage:prefab",
-    "onLanguage:json"
-  ],
   "extensionKind": [
     "workspace"
   ],
-  "main": "./dist/extension.js",
+  "main": "./out/extension.js",
   "scripts": {
-    "vscode:prepublish": "npm run package",
-    "compile": "webpack",
-    "watch": "webpack --watch",
-    "package": "webpack --mode production --devtool hidden-source-map",
-    "compile-tests": "tsc -p . --outDir out",
-    "watch-tests": "tsc -p . -w --outDir out",
-    "pretest": "npm run compile-tests && npm run compile && npm run lint",
-    "lint": "eslint src --ext ts",
-    "test": "node ./out/test/runTest.js"
+    "install:all": "npm install && cd webview-ui && npm install",
+    "start:webview": "cd webview-ui && npm run start",
+    "build:webview": "cd webview-ui && npm run build",
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "pretest": "npm run compile && npm run lint",
+    "lint": "eslint src --ext ts"
   },
   "devDependencies": {
     "@types/glob": "^8.1.0",
@@ -121,9 +144,9 @@
     "mocha": "^10.2.0",
     "prettier": "^3.0.0",
     "ts-loader": "^9.4.3",
-    "typescript": "^5.1.3",
-    "webpack": "^5.85.0",
-    "webpack-cli": "^5.1.1"
+    "typescript": "^5.4.5"
   },
-  "dependencies": {}
+  "dependencies": {
+    "jsonc-parser": "^3.2.0"
+  }
 }

@@ -10,6 +10,14 @@ uuid解析和组件hash解析功能依赖当前打开的是cocos creator项目�
 
 ## 版本记录
 
+### 2.0.0
+1.  修复若干BUG
+
+### 1.9.8
+1. 资源uuid查询，类似GPT聊天，支持长uuid和短uuid查询。也支持路径反向查uuid. 路径区分大小
+   /clear 指令所有记录
+   ![Alt text](images/image1.9.8.png)
+
 ### 1.3.0
 
 1. 支持引擎内置的uuid解析

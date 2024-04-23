@@ -1,0 +1,33 @@
+main {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  height: 100%;
+}
+
+.panel {
+  position: relative; /* 设置为定位元素 */
+  width: 100%; /* 设置宽度为屏幕宽度 */
+  max-height: 120px; /* 设置最大高度为 120 像素 */
+  overflow-x: hidden; /* 隐藏水平滚动条 */
+  overflow-y: auto; /* 如果内容超过最大高度，显示滚动条 */
+  background-color: #1e1e1e;
+  color: #d4d4d4;
+  padding: 10px;
+  margin-bottom: 8px;
+  overflow-wrap: break-word;/* 如果内容超过宽度，自动换行 */
+  box-sizing: border-box; /* 包括内边距和边框在内的宽度 */
+}
+
+.item {
+  margin-bottom: 6px;
+}
+
+.key {
+  color: #569cd6;
+}
+
+.value {
+  color: #CF9178;
+}

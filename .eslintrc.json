@@ -18,8 +18,9 @@
         "prettier"
     ],
     "rules": {
-        "@typescript-eslint/naming-convention": "warn",
+        "@typescript-eslint/naming-convention": "off",
         "@typescript-eslint/semi": "warn",
+        "no-unused-vars": "off",
         "curly": [
             "error",
             "all"
@@ -27,7 +28,8 @@
         "eqeqeq": "warn",
         "no-throw-literal": "warn",
         "semi": "off",
-        "no-console": "off"
+        "no-console": "off",
+        "prettier/prettier": "off"
     },
     "ignorePatterns": [
         "out",
