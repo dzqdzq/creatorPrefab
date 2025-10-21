@@ -103,13 +103,13 @@ function toRelativePath(jsonObj: any) {
   for (let uuid in jsonObj) {
     ret[uuid] = {
       relativePath: jsonObj[uuid].url
-    }
+    };
   }
   return ret;
 }
 
 function setLibraryInfos(data1: Uint8Array, data2?: Uint8Array, isVersion3?: boolean) {
-  libraryInfos = {}
+  libraryInfos = {};
   try {
     if (data1) {
       const dataObj = JSON.parse(data1.toString());
@@ -162,7 +162,7 @@ async function loadUuidJsonV3(library: string) {
   const assetsDataPath = `${library}/.assets-data.json`;
   const internalDataPath = `${library}/.internal-data.json`;
 
-  const assetsDataUri = vscode.Uri.file(assetsDataPath)
+  const assetsDataUri = vscode.Uri.file(assetsDataPath);
   const internalDataUri = vscode.Uri.file(internalDataPath);
 
   try {

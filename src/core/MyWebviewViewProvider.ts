@@ -76,11 +76,30 @@ export default class MyWebviewViewProvider implements vscode.WebviewViewProvider
             }
 
             if (Object.keys(ret).length === 0) {
-              window.showInformationMessage(`没有查询到${tryPath}的对应uuid`);
-            } else {
+              // 发送空结果给webview，让前端处理
               this._view!.webview.postMessage({
                 command: 'parseUUID_resp',
-                text: ret,
+                text: { code: 'NOT_FOUND', message: `没有查询到${tryPath}的对应uuid` },
+              });
+            } else {
+              // 将路径查询结果转换为统一格式
+              const firstResult = Object.entries(ret)[0];
+              const [path, uuid] = firstResult;
+
+              // 生成统一格式的数据
+              const longUUID = uuidUtils.getLongUUID(uuid);
+              const shorts = uuidUtils.getShortUUID(longUUID);
+
+              const info = {
+                short1: shorts[0],
+                short2: shorts[1],
+                long: longUUID,
+                path: path
+              };
+
+              this._view!.webview.postMessage({
+                command: 'parseUUID_resp',
+                text: info,
               });
             }
 
@@ -98,16 +117,25 @@ export default class MyWebviewViewProvider implements vscode.WebviewViewProvider
               path = '';
             }
           }
-          const info = {
-            short1: shorts[0],
-            short2: shorts[1],
-            long: longUUID,
-            path
-          };
-          this._view!.webview.postMessage({
-            command: 'parseUUID_resp',
-            text: info,
-          });
+          // 检查是否有有效结果
+          if (!path || path === '') {
+            // 没有找到对应的资源
+            this._view!.webview.postMessage({
+              command: 'parseUUID_resp',
+              text: { code: 'NOT_FOUND', message: '未找到对应的资源' },
+            });
+          } else {
+            const info = {
+              short1: shorts[0],
+              short2: shorts[1],
+              long: longUUID,
+              path
+            };
+            this._view!.webview.postMessage({
+              command: 'parseUUID_resp',
+              text: info,
+            });
+          }
           // webviewView.webview.setState({ html: webviewView.webview.html });
           break;
         }
@@ -143,7 +171,7 @@ export default class MyWebviewViewProvider implements vscode.WebviewViewProvider
           <title>Hello World</title>
         </head>
         <body>
-          <div id="root"></div>
+          <div id="app"></div>
           <script type="module" nonce="${nonce}" src="${scriptUri}"></script>
         </body>
       </html>

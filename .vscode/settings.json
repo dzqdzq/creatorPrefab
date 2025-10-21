@@ -1,18 +1,20 @@
-// Place your settings in this file to overwrite default and user settings.
 {
   "files.exclude": {
-      "out": false // set this to true to hide the "out" folder with the compiled JS files
+    "out": false
   },
   "search.exclude": {
-      "out": true // set this to false to include "out" folder in search results
+    "out": true
   },
-  // Turn off tsc task auto detection since we have the necessary tasks as npm scripts
   "typescript.tsc.autoDetect": "off",
-
-  // 保存自动格式化
   "editor.formatOnSave": true,
-  // 保存自动修复
   "editor.codeActionsOnSave": {
-      "source.fixAll.eslint": "always"
+    "source.fixAll.eslint": "always"
   },
+  "vue.server.hybridMode": false,
+  "vue.server.veturCompatibility": false,
+  "typescript.preferences.includePackageJsonAutoImports": "off",
+  "typescript.suggest.autoImports": false,
+  "vue.codeActions.enabled": true,
+  "vue.complete.casing.tags": "kebab",
+  "vue.complete.casing.props": "camel"
 }
