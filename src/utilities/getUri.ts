@@ -14,3 +14,13 @@ import { Uri, Webview } from "vscode";
 export function getUri(webview: Webview, extensionUri: Uri, pathList: string[]) {
   return webview.asWebviewUri(Uri.joinPath(extensionUri, ...pathList));
 }
+
+/**
+ * A helper function to get the file URI for preview mode
+ * @param extensionUri The URI of the directory containing the extension
+ * @param pathList An array of strings representing the path to a file/resource
+ * @returns A URI pointing to the file/resource
+ */
+export function getFileUri(extensionUri: Uri, pathList: string[]) {
+  return Uri.joinPath(extensionUri, ...pathList);
+}
