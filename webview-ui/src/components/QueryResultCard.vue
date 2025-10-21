@@ -17,10 +17,6 @@
         <span class="result-value">{{ item.result.short2 || '' }}</span>
       </div>
       <div class="result-item">
-        <span class="result-key">long:</span>
-        <span class="result-value">{{ item.result.long || '' }}</span>
-      </div>
-      <div class="result-item">
         <span class="result-key">path:</span>
         <span class="result-value">{{ item.result.path || '' }}</span>
       </div>
@@ -82,7 +78,7 @@ const getDisplayTitle = () => {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 8px;
+  margin-bottom: 4px;
 }
 
 .query-info {
@@ -114,24 +110,27 @@ const getDisplayTitle = () => {
 }
 
 .result-content {
-  padding: 8px 0;
+  padding: 4px 0;
 }
 
 .result-item {
   display: flex;
   margin-bottom: 4px;
   font-size: 13px;
+  align-items: flex-start;
 }
 
 .result-key {
   color: #569cd6;
   font-weight: 500;
-  min-width: 60px;
-  margin-right: 8px;
+  min-width: 50px;
+  margin-right: 4px;
+  flex-shrink: 0;
 }
 
 .result-value {
   color: #d4d4d4;
   word-break: break-all;
+  flex: 1;
 }
 </style>

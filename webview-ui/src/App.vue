@@ -1,10 +1,18 @@
 <template>
   <div class="app">
-    <CardList :items="items" @remove-item="removeItem" />
-    <div class="search-container">
-      <SearchBar @search="handleSearch" :is-loading="isLoading" />
+    
+    <!-- UUID查询界面 -->
+    <div v-if="!showPrefabUI && !isPreviewMode">
+      <CardList :items="items" @remove-item="removeItem" />
+      <div class="search-container">
+        <SearchBar @search="handleSearch" :is-loading="isLoading" />
+      </div>
+      <Toast :message="toastMessage" />
     </div>
-    <Toast :message="toastMessage" />
+    
+    <!-- Prefab UI界面 -->
+    <PrefabUI v-if="showPrefabUI || isPreviewMode" />
+    
   </div>
 </template>
 
@@ -14,6 +22,7 @@ import { vscode } from './utilities/vscode'
 import CardList from './components/CardList.vue'
 import SearchBar from './components/SearchBar.vue'
 import Toast from './components/Toast.vue'
+import PrefabUI from './components/PrefabUI.vue'
 
 interface QueryResult {
   id: string
@@ -27,6 +36,8 @@ interface QueryResult {
 const items = ref<QueryResult[]>([])
 const toastMessage = ref('')
 const isLoading = ref(false)
+const showPrefabUI = ref(false)
+const isPreviewMode = ref(false) // 预览模式状态
 
 const handleSearch = (inputValue: string) => {
   if (!inputValue.trim()) {
@@ -67,8 +78,44 @@ const handleSearch = (inputValue: string) => {
 }
 
 onMounted(() => {
+  console.log('App.vue onMounted')
+  console.log('document.title:', document.title)
+  console.log('window.location.search:', window.location.search)
+  console.log('showPrefabUI initial value:', showPrefabUI.value)
+  console.log('isPreviewMode initial value:', isPreviewMode.value)
+  
+  // 检测预览模式
+  const urlParams = new URLSearchParams(window.location.search)
+  const mode = urlParams.get('mode')
+  console.log('mode from URL:', mode)
+  
+  // 只有在明确的 Prefab UI 模式下才显示 PrefabUI
+  if (mode === 'prefab-preview' || document.title === 'Prefab UI') {
+    console.log('Setting prefab mode')
+    isPreviewMode.value = true
+    showPrefabUI.value = true
+    console.log('After setting - showPrefabUI:', showPrefabUI.value, 'isPreviewMode:', isPreviewMode.value)
+    return
+  }
+  
+  // 默认显示 UUID 查询界面（侧边栏模式）
+  console.log('Default mode: UUID query interface')
+  console.log('showPrefabUI:', showPrefabUI.value, 'isPreviewMode:', isPreviewMode.value)
+  
   window.addEventListener('message', (event) => {
     const message = event.data
+    
+    // 处理模式切换
+    if (message.command === 'switchToPrefabMode') {
+      showPrefabUI.value = true
+      return
+    }
+    
+    if (message.command === 'switchToUUIDMode') {
+      showPrefabUI.value = false
+      return
+    }
+    
     if (message.command === 'parseUUID_resp') {
       console.log('search===', message.text)
       isLoading.value = false

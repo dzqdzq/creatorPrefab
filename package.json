@@ -20,6 +20,12 @@
           "command": "creatorPrefab.parsePrefab",
           "group": "navigation",
           "title": "parsePrefab"
+        },
+        {
+          "when": "resourceLangId == prefab",
+          "command": "creatorPrefab.showPrefabUI",
+          "group": "navigation",
+          "title": "Open Prefab Preview"
         }
       ]
     },
@@ -85,6 +91,11 @@
       {
         "command": "creatorPrefab.showUUIDParser",
         "title": "Show UUID Parser"
+      },
+      {
+        "command": "creatorPrefab.showPrefabUI",
+        "title": "Show Prefab UI",
+        "category": "Creator Prefab"
       }
     ]
   },
@@ -148,9 +159,10 @@
     "mocha": "^10.2.0",
     "prettier": "^3.0.0",
     "ts-loader": "^9.4.3",
-    "typescript": "^5.4.5"
+    "typescript": "^5.9.3"
   },
   "dependencies": {
+    "@xuyanfeng/cc-ui": "^0.3.1",
     "jsonc-parser": "^3.2.0"
   }
 }
