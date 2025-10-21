@@ -2,7 +2,7 @@
   "name": "creator-prefab",
   "displayName": "Cocos Creator Prefab",
   "description": "Cocos Creator Prefab Parse, support jump __id__, highlight",
-  "version": "2.0.0",
+  "version": "2.2.2",
   "engines": {
     "vscode": "^1.80.0"
   },
@@ -51,7 +51,8 @@
         ],
         "extensions": [
           ".prefab",
-          ".fire"
+          ".fire",
+          ".scene"
         ],
         "configuration": "./language-configuration.json",
         "icon": {

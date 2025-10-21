@@ -1,14 +1,28 @@
 ## 插件说明
-
-本插件使用过程中不依赖creator编辑器
-
-这个vscode插件用于解析cocos creator中的prefab和fire文件。
-目前支持预制体图标标志、语法高亮、id跳转、uuid资源解析、组件hash解析。
-后续将新增节点树预览，解决预制体冲突
-
-uuid解析和组件hash解析功能依赖当前打开的是cocos creator项目目录，直白点就是依赖library目录的内容
+1. 插件使用过程中不依赖creator编辑器
+2. 插件现理论支持cocos creator 所有版本项目解析（如果发现某版本解析不了，欢迎提BUG）
+3. 插件用于解析cocos creator中的prefab和fire,scene文件。
+4. 目前支持预制体图标标志、语法高亮、id跳转、uuid资源解析、组件hash解析、scene场景解析。
+5. 支持多工作空间解析
+6. 支持资源查询，支持长uuid和短uuid查询。也支持路径反向查uuid. 路径区分大小
+## 赞助商
+如果本插件对您有用，可以支持一下, 谢谢<br/>
+![Alt text](images/1.jpg)<br/>
+感谢以下赞助商的支持 🙏
+| 赞助商 | 金额 |
+|--------|------|
+| **云哥哥** ⭐ | 10元 |
+| **峰哥** ⭐ | 10元 |
+| **治亿** | 5元 |
+| **冷高峰** | 5元 |
 
 ## 版本记录
+
+### 2.2.1
+1. 全面支持creator 3.x项目
+2. 优化插件包体大小
+3. 优化部分逻辑
+![Alt text](images/image2.2.1.png)
 
 ### 2.0.0
 1.  修复若干BUG
@@ -57,7 +71,3 @@ uuid解析和组件hash解析功能依赖当前打开的是cocos creator项目�
 4. 支持id信息预览
    ![Alt text](images/image-1.png)
 
-## 成为赞助商
-
-如果本插件对您有用，可以支持一下, 谢谢
-![Alt text](images/1.jpg)

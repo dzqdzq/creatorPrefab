@@ -4,6 +4,7 @@ import * as uuidUtils from '../uuid-utils';
 const vscodeFs = vscode.workspace.fs;
 
 let lineInfos: number[] | null = null;
+let cocosVersion = 0;
 let libraryInfos: { [key: string]: { relativePath: string } } = {};
 let isHaveLibrary = false;
 let importsPath: string = '';
@@ -97,9 +98,36 @@ function resetLibraryInfos() {
   importsPath = '';
 }
 
-function setLibraryInfos(data: Uint8Array) {
+function toRelativePath(jsonObj: any) {
+  let ret: any = {};
+  for (let uuid in jsonObj) {
+    ret[uuid] = {
+      relativePath: jsonObj[uuid].url
+    }
+  }
+  return ret;
+}
+
+function setLibraryInfos(data1: Uint8Array, data2?: Uint8Array, isVersion3?: boolean) {
+  libraryInfos = {}
   try {
-    libraryInfos = JSON.parse(data.toString());
+    if (data1) {
+      const dataObj = JSON.parse(data1.toString());
+      if (isVersion3) {
+        Object.assign(libraryInfos, toRelativePath(dataObj));
+      } else {
+        Object.assign(libraryInfos, dataObj);
+      }
+    }
+
+    if (data2) {
+      const dataObj = JSON.parse(data2.toString());
+      if (isVersion3) {
+        Object.assign(libraryInfos, toRelativePath(dataObj));
+      } else {
+        Object.assign(libraryInfos, dataObj);
+      }
+    }
     isHaveLibrary = true;
   } catch (error) {
     resetLibraryInfos();
@@ -107,7 +135,7 @@ function setLibraryInfos(data: Uint8Array) {
   return isHaveLibrary;
 }
 
-async function loadUuidJson(jsonPath: string) {
+async function loadUuidJsonV2(jsonPath: string) {
   const jsonUri = vscode.Uri.file(jsonPath);
   try {
     const data = await vscodeFs.readFile(jsonUri);
@@ -116,21 +144,69 @@ async function loadUuidJson(jsonPath: string) {
       if (eventType === 'change') {
         const jsonUri = vscode.Uri.file(jsonPath);
         vscodeFs.readFile(jsonUri).then((data) => {
-          setLibraryInfos(data);
+          setLibraryInfos(data, undefined, false);
           importsPath = jsonPath.replace('uuid-to-mtime.json', 'imports');
         }, resetLibraryInfos);
       }
 
       console.log(`File ${filename} has been ${eventType}`);
     });
-    setLibraryInfos(data);
+    setLibraryInfos(data, undefined, false);
   } catch (error) {
     resetLibraryInfos();
   }
   return isHaveLibrary;
 }
 
-async function dealLibrary(): Promise<void> {
+async function loadUuidJsonV3(library: string) {
+  const assetsDataPath = `${library}/.assets-data.json`;
+  const internalDataPath = `${library}/.internal-data.json`;
+
+  const assetsDataUri = vscode.Uri.file(assetsDataPath)
+  const internalDataUri = vscode.Uri.file(internalDataPath);
+
+  try {
+    const assetsData = await vscodeFs.readFile(assetsDataUri);
+    const internalData = await vscodeFs.readFile(internalDataUri);
+    fs.watch(assetsDataPath, (eventType: fs.WatchEventType, filename) => {
+      if (eventType === 'change') {
+        vscodeFs.readFile(assetsDataUri).then((data) => {
+          setLibraryInfos(data, undefined, true);
+        }, resetLibraryInfos);
+      }
+
+      console.log(`File ${filename} has been ${eventType}`);
+    });
+    setLibraryInfos(assetsData, internalData, true);
+  } catch (error) {
+    resetLibraryInfos();
+  }
+  return isHaveLibrary;
+}
+
+async function getCocosVersion() {
+  let version = 0;
+
+  const workspaceFolders = vscode.workspace.workspaceFolders;
+  if (!workspaceFolders) {
+    return version;
+  }
+
+  for (let workspaceFolder of workspaceFolders) {
+    const libraryPath = `${workspaceFolder.uri.fsPath}/library/`;
+
+    if (fs.existsSync(libraryPath + '.internal-data.json')) {
+      version = 3;
+      break;
+    } else if (fs.existsSync(libraryPath + 'uuid-to-mtime.json')) {
+      version = 2;
+      break;
+    }
+  }
+  return version;
+}
+
+async function dealLibraryV2(): Promise<void> {
   if (dealLibraryLock) {
     return;
   }
@@ -149,13 +225,51 @@ async function dealLibrary(): Promise<void> {
     for (let workspaceFolder of workspaceFolders) {
       let workspaceFolderPath = workspaceFolder.uri.fsPath;
       const jsonPath = workspaceFolderPath + '/library/uuid-to-mtime.json';
-      if (await loadUuidJson(jsonPath)) {
+      if (await loadUuidJsonV2(jsonPath)) {
         break;
       }
     }
     // eslint-disable-next-line no-constant-condition
   } while (false);
   dealLibraryLock = false;
+}
+
+// cocos creator 3.x
+async function dealLibraryV3(): Promise<void> {
+  if (dealLibraryLock) {
+    return;
+  }
+
+  dealLibraryLock = true;
+  do {
+    let workspaceFolders = vscode.workspace.workspaceFolders;
+    if (!workspaceFolders) {
+      break;
+    }
+
+    if (isHaveLibrary) {
+      break;
+    }
+
+    for (let workspaceFolder of workspaceFolders) {
+      let workspaceFolderPath = workspaceFolder.uri.fsPath;
+      if (fs.existsSync(workspaceFolderPath + '/library/.assets-data.json')) {
+        if (await loadUuidJsonV3(workspaceFolderPath + '/library/')) {
+          break;
+        }
+      }
+    }
+    // eslint-disable-next-line no-constant-condition
+  } while (false);
+  dealLibraryLock = false;
+}
+
+function dealLibrary() {
+  if (cocosVersion === 2) {
+    return dealLibraryV2();
+  } else {
+    return dealLibraryV3();
+  }
 }
 
 export async function dealEditor(): Promise<void> {
@@ -165,6 +279,11 @@ export async function dealEditor(): Promise<void> {
     return;
   }
 
+  cocosVersion = await getCocosVersion();
+  if (cocosVersion === 0) {
+    console.log('dealEditor... 没有找到cocos版本,可能不是cocos项目');
+    return;
+  }
   // 插件正在忙
   if (dealLibraryLock) {
     console.log('dealEditor... lock');
@@ -211,11 +330,12 @@ export async function dealEditor(): Promise<void> {
     }
     let uuidIdx = line.indexOf('"__uuid__":');
     if (uuidIdx > 0) {
-      const uuid = line.substring(uuidIdx + 13, uuidIdx + 49);
+      let offset = line.includes("@") ? 6 : 0;
+      const uuid = line.substring(uuidIdx + 13, uuidIdx + 49 + offset);
       const asset = libraryInfos[uuid];
       if (asset) {
         const contentText = asset.relativePath;
-        let positionStart = new vscode.Position(i, uuidIdx + 52);
+        let positionStart = new vscode.Position(i, uuidIdx + 52 + offset);
         let range = new vscode.Range(positionStart, positionStart);
         let decoration: vscode.DecorationOptions = {
           range: range,
@@ -249,7 +369,7 @@ export async function dealEditor(): Promise<void> {
 }
 
 export async function getLibraryInfos() {
-  if (!isHaveLibrary) {
+  if (!isHaveLibrary && cocosVersion) {
     await dealLibrary();
   }
   return libraryInfos;
