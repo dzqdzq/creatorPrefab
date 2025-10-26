@@ -23,7 +23,7 @@ async function getSpriteFrame(uuid: string, libraryInfos: any) {
   }
 }
 
-export default class MyWebviewViewProvider implements vscode.WebviewViewProvider {
+export default class UuidQueryProvider implements vscode.WebviewViewProvider {
   private _view?: vscode.WebviewView;
   private _isPrefabMode = false;
 
@@ -48,24 +48,6 @@ export default class MyWebviewViewProvider implements vscode.WebviewViewProvider
       // Perform cleanup operations here
     });
   }// end resolveWebviewView
-
-  public switchToPrefabMode() {
-    this._isPrefabMode = true;
-    if (this._view) {
-      this._view.webview.postMessage({
-        command: 'switchToPrefabMode'
-      });
-    }
-  }
-
-  public switchToUUIDMode() {
-    this._isPrefabMode = false;
-    if (this._view) {
-      this._view.webview.postMessage({
-        command: 'switchToUUIDMode'
-      });
-    }
-  }
 
   private listen() {
     if (!this._view) {

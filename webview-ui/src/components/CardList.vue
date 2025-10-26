@@ -52,6 +52,7 @@ defineEmits<{
 .card-list {
   height: calc(100vh - 60px);
   overflow-y: auto;
+  padding: 8px 8px 0 8px;
   /* 自定义滚动条样式 */
   scrollbar-width: thin;
   scrollbar-color: #3c3c3c #1e1e1e;
@@ -80,7 +81,7 @@ defineEmits<{
   justify-content: center;
   align-items: center;
   height: 100%;
-  padding: 20px;
+  padding: 20px 8px;
 }
 
 .welcome-content {

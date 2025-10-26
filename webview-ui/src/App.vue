@@ -178,7 +178,7 @@ const removeItem = (index: number) => {
 }
 
 .search-container {
-  padding: 12px 16px;
+  padding: 12px 8px;
   background-color: #1e1e1e;
   border-top: 1px solid #3c3c3c;
   flex-shrink: 0;
