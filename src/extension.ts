@@ -9,11 +9,10 @@ export async function activate(context: vscode.ExtensionContext) {
 
   context.subscriptions.push(vscode.languages.registerDefinitionProvider('prefab', prefabFn));
 
-  // 注册一个命令，用于解析 JSON 文件并创建对应的符号
   context.subscriptions.push(
     vscode.window.registerWebviewViewProvider(
       'uuidParser',
-      uuidQueryProvider,
+      uuidQueryProvider,// 侧边栏UUID查询
       {
         webviewOptions: {
           retainContextWhenHidden: true,
@@ -22,7 +21,7 @@ export async function activate(context: vscode.ExtensionContext) {
     ),
     vscode.commands.registerCommand('creatorPrefab.parsePrefab', dealEditor),
     vscode.commands.registerCommand('creatorPrefab.showPrefabUI', () => {
-      prefabUIProvider.showPrefabUI();
+      prefabUIProvider.showPrefabUI();// 预览模式
     }),
     vscode.window.onDidChangeActiveTextEditor(dealEditor)
   );

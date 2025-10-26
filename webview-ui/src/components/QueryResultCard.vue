@@ -89,8 +89,9 @@ const getDisplayTitle = () => {
 
 .query-text {
   font-weight: 500;
-  color: #d4d4d4;
+  color: rgb(227, 148, 220);
   font-size: 14px;
+  font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
 }
 
 .remove-btn {

@@ -3,7 +3,7 @@
     <div v-if="items.length === 0" class="welcome">
       <div class="welcome-content">
         <h1>creator资源查询功能介绍</h1>
-        <h2>使用案例12:</h2>
+        <h2>使用案例:</h2>
         <div class="examples">
           <p>1. 输入长UUID: e24d07b2-28d6-4a7e-aa88-91598af8bd80</p>
           <p>2. 输入短UUID: e24d0eyKNZKfqqIkVmK+L2A</p>
