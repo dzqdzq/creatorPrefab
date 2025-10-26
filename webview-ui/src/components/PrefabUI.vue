@@ -89,11 +89,11 @@ const allNodes = computed(() => {
     
     // 根节点是数组的第一个元素（索引 0）
     const rootNodeData = prefabData.value[0]
-    if (rootNodeData && rootNodeData.__type__ === 'cc.Prefab') {
+    if (rootNodeData && (rootNodeData.__type__ === 'cc.Prefab' || rootNodeData.__type__ === 'cc.SceneAsset')) {
       console.log('allNodes: found root prefab:', rootNodeData)
       
       // 获取根节点的数据引用
-      const rootDataId = rootNodeData.data.__id__
+      const rootDataId = rootNodeData.data ? rootNodeData.data.__id__ : 2;
       const rootNodeDataRef = prefabData.value[rootDataId]
       
       if (rootNodeDataRef) {
