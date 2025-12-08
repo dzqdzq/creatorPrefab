@@ -12,7 +12,7 @@ try {
 
     // 2. 构建webview
     console.log('🌐 构建Webview...');
-    execSync('npm run build', {
+    execSync('pnpm run build', {
         cwd: path.join(__dirname, '../webview-ui'),
         stdio: 'inherit'
     });

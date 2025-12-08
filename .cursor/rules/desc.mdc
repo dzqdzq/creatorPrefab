@@ -1,0 +1,8 @@
+---
+alwaysApply: true
+---
+
+- 使用pnpm包管理
+- creator-ui-kit 是属性面板UI项目
+- 当前项目是vscode的插件项目， 用于prefab文件解析以及预览
+- webview-ui应该使用pnpm包管理

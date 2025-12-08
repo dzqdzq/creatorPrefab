@@ -16,7 +16,7 @@ if (isVSCode) {
     console.log('🌐 启动Webview开发服务器...');
 
     // 启动webview开发服务器
-    const webviewProcess = spawn('npm', ['run', 'dev:webview'], {
+    const webviewProcess = spawn('pnpm', ['run', 'dev'], {
         cwd: path.join(__dirname, '../webview-ui'),
         stdio: 'inherit',
         shell: true

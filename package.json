@@ -133,18 +133,18 @@
   ],
   "main": "./out/extension.js",
   "scripts": {
-    "install:all": "npm install && cd webview-ui && npm install",
+    "install:all": "pnpm install && cd webview-ui && pnpm install",
     "dev": "node scripts/dev.js",
     "debug": "node scripts/debug.js",
     "build": "node scripts/build.js",
     "package": "node scripts/package.js",
     "fix": "node scripts/fix-all.js",
-    "vscode:prepublish": "npm run build",
+    "vscode:prepublish": "pnpm run build",
     "compile": "tsc -p ./",
     "watch": "tsc -watch -p ./",
     "lint": "eslint src --ext ts",
-    "webview:dev": "cd webview-ui && npm run dev",
-    "webview:build": "cd webview-ui && npm run build"
+    "webview:dev": "cd webview-ui && pnpm run dev",
+    "webview:build": "cd webview-ui && pnpm run build"
   },
   "devDependencies": {
     "@types/glob": "^8.1.0",

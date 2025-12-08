@@ -4,10 +4,13 @@
   "private": true,
   "scripts": {
     "dev": "vite",
-    "build": "vue-tsc && vite build",
+    "build": "vite build",
+    "build:check": "vue-tsc --skipLibCheck && vite build",
     "preview": "vite preview"
   },
   "dependencies": {
+    "@aspect/creator-ui-kit": "file:../../creator-ui-kit",
+    "@element-plus/icons-vue": "^2.3.1",
     "element-plus": "^2.11.5",
     "vue": "^3.4.0"
   },

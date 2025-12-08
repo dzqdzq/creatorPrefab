@@ -116,7 +116,7 @@ criticalFiles.forEach(file => {
 });
 
 if (!allFilesExist) {
-    console.log('❌ 打包失败：关键文件缺失，请先运行 npm run build');
+    console.log('❌ 打包失败：关键文件缺失，请先运行 pnpm run build');
     process.exit(1);
 }
 

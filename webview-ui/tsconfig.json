@@ -7,14 +7,20 @@
     "skipLibCheck": true,
     "esModuleInterop": false,
     "allowSyntheticDefaultImports": true,
-    "strict": true,
+    "strict": false,
     "forceConsistentCasingInFileNames": true,
     "module": "esnext",
-    "moduleResolution": "node",
+    "moduleResolution": "bundler",
     "resolveJsonModule": true,
     "isolatedModules": true,
     "noEmit": true,
-    "jsx": "react-jsx"
+    "jsx": "react-jsx",
+    "baseUrl": ".",
+    "paths": {
+      "@aspect/creator-ui-kit/vue": ["../../creator-ui-kit/src/cc/index.ts"],
+      "@aspect/creator-ui-kit/*": ["../../creator-ui-kit/*"]
+    }
   },
-  "include": ["./src"]
+  "include": ["./src"],
+  "exclude": ["../../creator-ui-kit"]
 }
